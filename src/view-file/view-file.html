@@ -1,0 +1,138 @@
+<div class="view-container py-4">
+  @if (isLoading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+      <h2 class="fw-bold">Loading file...</h2>
+      <p class="text-muted">Please wait while we fetch your file</p>
+    </div>
+  } @else if (error()) {
+    <div class="card border-0 shadow-sm text-center p-5 rounded-4">
+      <div class="display-1 text-warning mb-4">
+        <i class="bi bi-exclamation-triangle"></i>
+      </div>
+      <h2 class="fw-bold">File Not Found</h2>
+      <p class="text-muted mb-4">{{ error() }}</p>
+      <div>
+        <button class="btn btn-primary btn-lg px-4 d-inline-flex align-items-center gap-2" routerLink="/">
+          <i class="bi bi-house-door-fill"></i>
+          Go Back Home
+        </button>
+      </div>
+    </div>
+  } @else if (fileInfo()) {
+    <div class="shadow-lg rounded-4 overflow-hidden border-0">
+      <!-- File Header -->
+      <div class="file-header-modern">
+        <div class="row align-items-center g-4">
+          <div class="col-md-8">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <span class="display-5">{{ getFileIcon() }}</span>
+              <div>
+                <h1 class="h3 mb-1 text-white">{{ fileInfo()!.name }}</h1>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="file-meta-badge">
+                    <i class="bi bi-hdd"></i>
+                    {{ formatFileSize(fileInfo()!.size) }}
+                  </span>
+                  <span class="file-meta-badge">
+                    <i class="bi bi-calendar3"></i>
+                    {{ formatDate(fileInfo()!.uploadedAt) }}
+                  </span>
+                  <span class="file-meta-badge">
+                    <i class="bi bi-eye"></i>
+                    {{ fileInfo()!.views }} views
+                  </span>
+                  @if (fileInfo()!.uploader) {
+                    <span class="file-meta-badge">
+                      <i class="bi bi-person"></i>
+                      {{ fileInfo()!.uploader }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+              <button class="btn btn-light px-4 fw-bold shadow-sm d-flex align-items-center gap-2" (click)="downloadFile()">
+                <i class="bi bi-download"></i>
+                Download
+              </button>
+              <button class="btn btn-outline-light px-3 d-flex align-items-center gap-2" (click)="copyLink()">
+                <i class="bi bi-link-45deg fs-5"></i>
+                Copy
+              </button>
+              <button class="btn btn-outline-light px-3 d-flex align-items-center gap-2" routerLink="/">
+                <i class="bi bi-plus-lg"></i>
+                New
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Viewer -->
+      <div class="viewer-window">
+        <div class="w-100 text-center">
+          @if (isImage()) {
+            <img [src]="getSafeImageUrl() || ''"
+                 [alt]="fileInfo()!.name"
+                 class="img-fluid rounded-3 preview-shadow">
+          } @else if (isPdf()) {
+            <iframe [src]="getSafePdfUrl() || ''"
+                    class="pdf-frame shadow"
+                    title="PDF Viewer"
+                    loading="lazy">
+            </iframe>
+          }  @else {
+            <div class="py-5">
+              <div class="display-1 text-muted mb-4">{{ getFileIcon() }}</div>
+              <h4 class="mb-3">Preview not available</h4>
+              <p class="text-muted mb-4">This file type cannot be previewed in the browser.</p>
+              <button class="btn btn-primary btn-lg px-5 shadow-sm d-flex align-items-center gap-2 mx-auto" (click)="downloadFile()">
+                <i class="bi bi-download"></i>
+                Download {{ fileInfo()!.name }}
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- File Information Section -->
+      <div class="bg-light p-4 p-md-5 border-top">
+        <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+          <i class="bi bi-info-circle text-primary"></i>
+          File Details
+        </h5>
+        <div class="row g-3">
+          <div class="col-sm-6 col-lg-3">
+            <div class="stat-pill">
+              <div class="label">File Size</div>
+              <div class="value">{{ formatFileSize(fileInfo()!.size) }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="stat-pill">
+              <div class="label">Total Views</div>
+              <div class="value">{{ fileInfo()!.views }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="stat-pill">
+              <div class="label">Uploaded On</div>
+              <div class="value">{{ formatDate(fileInfo()!.uploadedAt) }}</div>
+            </div>
+          </div>
+          @if (fileInfo()!.uploader) {
+            <div class="col-sm-6 col-lg-3">
+              <div class="stat-pill">
+                <div class="label">Uploaded By</div>
+                <div class="value">{{ fileInfo()!.uploader }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
