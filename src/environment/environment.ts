@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000', // Your local NestJS
+  apiUrl: 'http://llhllbe-production.up.railway.app', // Your local NestJS
   appName: 'LLHLL'
 };
 
