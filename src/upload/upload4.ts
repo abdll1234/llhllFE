@@ -99,9 +99,9 @@ export class Upload4 {
               height: 256,
               margin: 16,
               data: response.data.viewUrl,
-              image: this.imageHalal,
+              image: "Halal-logo_1200x1200.png",
               dotsOptions: {
-                color: "#0a5a0a",
+                color: "#007e06",
                 type: "rounded",
               },
               backgroundOptions: {
