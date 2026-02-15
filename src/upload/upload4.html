@@ -85,7 +85,6 @@
         <div class="mb-4 p-3 bg-light rounded-4 d-inline-block mw-100">
           @if (state().result!.fileUrl.includes('image')) {
             <img [src]="state().result!.fileUrl" [alt]="state().result!.fileName" class="img-fluid preview-img shadow-sm">
-            <div #canvas></div>
           } @else {
             <div class="py-4 px-5">
               <div class="display-4 mb-2">{{ state().result!.fileUrl.includes('pdf') ? '📄' : '📁' }}</div>
@@ -109,7 +108,7 @@
         <div class="mb-5">
           <h5 class="fw-bold mb-3">Scan QR Code</h5>
           <div class="qr-wrapper mb-3">
-            <img [src]="state().result!.qrCode" alt="QR Code" class="img-fluid">
+            <div #canvas></div>
           </div>
           <p class="text-muted small">Scan with your phone camera to view the file</p>
         </div>

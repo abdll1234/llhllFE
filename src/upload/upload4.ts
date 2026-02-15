@@ -41,7 +41,7 @@ export class Upload4 {
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
-  @ViewChild("canvas", { static: true }) canvas: ElementRef | undefined;
+  @ViewChild("canvas") canvas: ElementRef | undefined;
   imageHalal = "favicon.ico"
 
   state = signal<UploadState>({
@@ -90,27 +90,33 @@ export class Upload4 {
 
       if (response?.success) {
         this.state.update(s => ({ ...s, result: response.data, isUploading: false }));
-        if (this.canvas){
-          const qrCode = new QRCodeStyling({
-            width: 256,
-            height: 256,
-            margin: 16,
-            data: response.data.viewUrl,
-            image:this.imageHalal,
-            dotsOptions: {
-              color: "#0a5a0a",
-              type: "rounded",
-            },
-            backgroundOptions: {
-              color: "#FFFFFF",
-            },
-            imageOptions: {
-              crossOrigin: "anonymous",
-              margin: 14,
-            },
-          })
-          qrCode.append(this.canvas.nativeElement)
-        }
+
+        // Use setTimeout to allow Angular to render the #canvas element first
+        setTimeout(() => {
+          if (this.canvas) {
+            const qrCode = new QRCodeStyling({
+              width: 256,
+              height: 256,
+              margin: 16,
+              data: response.data.viewUrl,
+              image: this.imageHalal,
+              dotsOptions: {
+                color: "#0a5a0a",
+                type: "rounded",
+              },
+              backgroundOptions: {
+                color: "#FFFFFF",
+              },
+              imageOptions: {
+                crossOrigin: "anonymous",
+                margin: 14,
+              },
+            });
+            qrCode.append(this.canvas.nativeElement);
+            this.qrCodeInstance = qrCode;
+          }
+        }, 0);
+
         this.showSuccess('File uploaded successfully!');
       } else {
         throw new Error(response?.message || 'Upload failed');
@@ -127,7 +133,17 @@ export class Upload4 {
     });
   }
 
+  qrCodeInstance: QRCodeStyling | null = null;
+
   downloadQRCode(): void {
+    if (this.qrCodeInstance) {
+      this.qrCodeInstance.download({
+        name: `qr-${this.state().result?.fileId || 'code'}`,
+        extension: 'png'
+      });
+      return;
+    }
+
     const result = this.state().result;
     if (!result?.qrCode) return;
 
