@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, ElementRef, inject, signal, ViewChild} from '@angular/core';
 import {Api, UploadResponse} from '../services/api';
 import {FileService} from '../services/file.service';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
@@ -10,6 +10,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
+import QRCodeStyling from "qr-code-styling";
 
 interface UploadState {
   file: File | null;
@@ -39,6 +40,9 @@ export class Upload4 {
   private fileService = inject(FileService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+
+  @ViewChild("canvas", { static: true }) canvas: ElementRef | undefined;
+  imageHalal = "favicon.ico"
 
   state = signal<UploadState>({
     file: null,
@@ -86,6 +90,27 @@ export class Upload4 {
 
       if (response?.success) {
         this.state.update(s => ({ ...s, result: response.data, isUploading: false }));
+        if (this.canvas){
+          const qrCode = new QRCodeStyling({
+            width: 256,
+            height: 256,
+            margin: 16,
+            data: response.data.viewUrl,
+            image:this.imageHalal,
+            dotsOptions: {
+              color: "#0a5a0a",
+              type: "rounded",
+            },
+            backgroundOptions: {
+              color: "#FFFFFF",
+            },
+            imageOptions: {
+              crossOrigin: "anonymous",
+              margin: 14,
+            },
+          })
+          qrCode.append(this.canvas.nativeElement)
+        }
         this.showSuccess('File uploaded successfully!');
       } else {
         throw new Error(response?.message || 'Upload failed');

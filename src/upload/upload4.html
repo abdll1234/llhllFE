@@ -85,6 +85,7 @@
         <div class="mb-4 p-3 bg-light rounded-4 d-inline-block mw-100">
           @if (state().result!.fileUrl.includes('image')) {
             <img [src]="state().result!.fileUrl" [alt]="state().result!.fileName" class="img-fluid preview-img shadow-sm">
+            <div #canvas></div>
           } @else {
             <div class="py-4 px-5">
               <div class="display-4 mb-2">{{ state().result!.fileUrl.includes('pdf') ? '📄' : '📁' }}</div>
