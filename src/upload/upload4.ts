@@ -39,6 +39,7 @@ export class Upload4 {
   private fileService = inject(FileService);
   private snackBar = inject(MatSnackBar);
 
+
   @ViewChild("canvas") canvas: ElementRef | undefined;
 
   state = signal<UploadState>({
@@ -96,7 +97,7 @@ export class Upload4 {
               height: 256,
               margin: 16,
               data: response.data.viewUrl,
-              image: "NEWLOGO.png",
+              image: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
               dotsOptions: {
                 color: "#007e06",
                 type: "rounded",
