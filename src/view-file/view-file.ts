@@ -21,7 +21,6 @@ export class ViewFile implements OnInit{
   private apiService = inject(Api);
   private fileService = inject(FileService);
   private snackBar = inject(MatSnackBar);
-  private router = inject(Router);
 
   private sanitizer = inject(DomSanitizer);
 
