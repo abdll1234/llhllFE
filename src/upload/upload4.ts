@@ -2,14 +2,13 @@ import {Component, ElementRef, inject, signal, ViewChild} from '@angular/core';
 import {Api, UploadResponse} from '../services/api';
 import {FileService} from '../services/file.service';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
-import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
+import { MatIconModule} from '@angular/material/icon';
 import QRCodeStyling from "qr-code-styling";
 
 interface UploadState {
@@ -39,10 +38,8 @@ export class Upload4 {
   private apiService = inject(Api);
   private fileService = inject(FileService);
   private snackBar = inject(MatSnackBar);
-  private router = inject(Router);
 
   @ViewChild("canvas") canvas: ElementRef | undefined;
-  imageHalal = "favicon.ico"
 
   state = signal<UploadState>({
     file: null,
@@ -53,7 +50,7 @@ export class Upload4 {
   });
 
   fileInfo = signal<{ name: string; size: string; icon: string } | null>(null);
-  protected QRCode = "QRCode"
+
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -109,7 +106,9 @@ export class Upload4 {
               },
               imageOptions: {
                 crossOrigin: "anonymous",
-                margin: 14,
+                margin: 5,         // Reduced margin from 14 to 5 makes the image larger
+                imageSize: 0.4,    // Increases the image size to 40% of the QR code (default is 0.4, but reducing margin helps)
+                hideBackgroundDots: true
               },
             });
             qrCode.append(this.canvas.nativeElement);
