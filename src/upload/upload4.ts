@@ -10,6 +10,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import { MatIconModule} from '@angular/material/icon';
 import {HttpClient} from '@angular/common/http';
+import {QrService} from '../services/qr.service';
 
 interface UploadState {
   file: File | null;
@@ -39,6 +40,7 @@ export class Upload4 {
   private fileService = inject(FileService);
   private snackBar = inject(MatSnackBar);
   private http = inject(HttpClient);
+  private qrService = inject(QrService);
 
 
   @ViewChild("canvas") canvas: ElementRef | undefined;
@@ -112,55 +114,23 @@ export class Upload4 {
   qrCodeUrl = signal<string | null>(null);
 
   async generateCustomQRCode(data: string) {
-    const body = {
-      data: data,
-      config: {
-        body: 'japanese',
-        eye: 'frame2',
-        eyeBall: 'ball2',
-        erf1: [],
-        erf2: [],
-        erf3: [],
-        brf1: [],
-        brf2: [],
-        brf3: [],
-        bodyColor: '#1F4029',
-        bgColor: '#FFFFFF',
-        eye1Color: '#1F4029',
-        eye2Color: '#1F4029',
-        eye3Color: '#1F4029',
-        eyeBall1Color: '#1F4029',
-        eyeBall2Color: '#1F4029',
-        eyeBall3Color: '#1F4029',
-        gradientColor1: '',
-        gradientColor2: '',
-        gradientType: 'linear',
-        gradientOnEyes: 'true',
-        logo: 'https://llhll.vercel.app/assets/NEWLOGO.png',
-        logoMode: 'clean'
-      },
-      size: 600,
-      download: 'imageUrl',
-      file: 'png'
-    };
+    this.qrCodeBlob = null;
+    this.qrCodeUrl.set(null);
 
-    try {
-      const response = await this.http.post('https://api.qrcode-monkey.com/qr/custom', body, {
-        responseType: 'blob'
-      }).toPromise();
-
-      if (response) {
-        this.qrCodeBlob = response;
+    this.qrService.generateQR(data).subscribe({
+      next: (blob: Blob) => {
+        this.qrCodeBlob = blob;
         const reader = new FileReader();
         reader.onloadend = () => {
           this.qrCodeUrl.set(reader.result as string);
         };
-        reader.readAsDataURL(response);
+        reader.readAsDataURL(blob);
+      },
+      error: (error) => {
+        console.error('Error generating QR code via backend proxy:', error);
+        this.showError('Failed to generate custom QR code.');
       }
-    } catch (error) {
-      console.error('Error generating QR code with QR Code Monkey:', error);
-      this.showError('Failed to generate custom QR code. Using default.');
-    }
+    });
   }
 
   downloadQRCode(): void {
