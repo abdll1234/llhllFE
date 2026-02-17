@@ -6,12 +6,14 @@ import {Api, FileInfo} from '../services/api';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {QrComponent} from '../qr/qr.component';
 
 @Component({
   selector: 'app-view-file',
   imports: [
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    QrComponent
   ],
   templateUrl: './view-file.html',
   styleUrl: './view-file.css',
@@ -29,6 +31,7 @@ export class ViewFile implements OnInit{
   error = signal<string | null>(null);
   isImage = signal(false);
   isPdf = signal(false);
+  verifyUrl: string = window.location.href;
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

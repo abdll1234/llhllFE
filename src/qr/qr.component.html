@@ -1,0 +1,24 @@
+<div class="qr-wrapper">
+  @if (isLoading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>QR Code wird generiert...</p>
+    </div>
+  }
+
+  @if (hasError) {
+    <div class="error">
+      <p>Fehler beim Generieren des QR Codes</p>
+      <button (click)="loadQR()">Nochmal versuchen</button>
+    </div>
+  }
+
+  @if (qrImageUrl && !isLoading) {
+    <div class="qr-content">
+      <img [src]="qrImageUrl" alt="QR Code" width="250" height="250" />
+      <button (click)="downloadQR()" class="download-btn">
+        QR Code herunterladen
+      </button>
+    </div>
+  }
+</div>
