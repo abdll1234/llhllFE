@@ -1,29 +1,24 @@
-/* src/app/components/upload/upload.component.scss */
 .upload-container {
   max-width: 650px;
   margin: 0 auto;
 }
 
 .file-drop-area {
-  border: 2px dashed #dee2e6;
+  border: 2px dashed #a8d5b8;
   border-radius: 1rem;
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  background: #f8f9fa;
+  transition: all 0.25s ease-in-out;
+  background: #f0f7f3;
   margin-bottom: 1.5rem;
 }
 
 .file-drop-area:hover {
-  border-color: #0d6efd;
-  background: #f1f7ff;
-}
-
-.file-icon-display {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-  display: block;
+  border-color: #00a550;
+  background: #e8f5ee;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 165, 80, 0.15);
 }
 
 .success-card {
@@ -40,7 +35,8 @@
   padding: 1.5rem;
   border-radius: 1rem;
   display: inline-block;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0, 100, 60, 0.12);
+  border: 2px solid #e8f5ee;
 }
 
 .qr-wrapper img {
@@ -52,4 +48,14 @@
   max-height: 250px;
   object-fit: contain;
   border-radius: 0.5rem;
+}
+
+.result-url-box {
+  background: #f0f7f3;
+  border: 1.5px solid #a8d5b8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  color: #1a4731;
+  word-break: break-all;
 }

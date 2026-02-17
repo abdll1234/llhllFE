@@ -1,134 +1,128 @@
-<!-- src/app/components/upload/upload.component.html -->
 <div class="upload-container py-4">
   @if (!state().result) {
-    <div class="card border-0 shadow-sm">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <div class="mb-3" style="font-size: 3rem;">🌙</div>
+      <h2 class="fw-bold" style="color: #1a4731;">Upload Halal Certificate</h2>
+      <p class="text-muted">Upload your certificate and get a QR code instantly</p>
+    </div>
+
+    <div class="card">
       <div class="card-body p-4 p-md-5">
-        <div class="text-center mb-4">
-          <h2 class="fw-bold">Upload File</h2>
-          <p class="text-muted">Share files instantly with QR codes</p>
-        </div>
 
-        <!-- File Drop Area -->
+        <!-- Drop Area -->
         <div class="file-drop-area" (click)="fileInput.click()">
-          <input #fileInput type="file" (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png,.gif" hidden>
-
-          <span class="file-icon-display">
-            {{ fileInfo()?.icon || '📁' }}
-          </span>
-
-          <h4 class="mb-2">{{ fileInfo() ? 'File Selected' : 'Select a file' }}</h4>
-          <p class="text-muted small mb-0">{{ fileInfo() ? fileInfo()!.name + ' (' + fileInfo()!.size + ')' : 'PDF, JPG, PNG, GIF up to 50MB' }}</p>
+          <input #fileInput type="file" (change)="onFileSelected($event)"
+                 accept=".pdf,.jpg,.jpeg,.png,.gif" hidden>
+          @if (!fileInfo()) {
+            <div>
+              <div style="font-size: 3rem; color: #00a550;">📄</div>
+              <p class="mt-2 mb-1 fw-semibold" style="color: #1a4731;">
+                Drag file here or click to browse
+              </p>
+              <p class="small text-muted mb-0">PDF, JPG, PNG – max. 10 MB</p>
+            </div>
+          } @else {
+            <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
+              <span style="font-size: 2.5rem;">{{ fileInfo()?.icon }}</span>
+              <div class="text-start">
+                <p class="mb-0 fw-semibold" style="color: #1a4731;">{{ fileInfo()?.name }}</p>
+                <p class="mb-0 small text-muted">{{ fileInfo()?.size }}</p>
+              </div>
+              <button class="btn btn-sm btn-outline-danger"
+                      (click)="$event.stopPropagation(); closeButton()">
+                ✕
+              </button>
+            </div>
+          }
         </div>
 
-        <!-- Selected File Info -->
-        @if (fileInfo()) {
-          <div class="d-flex align-items-center bg-light p-3 rounded-3 mb-4">
-            <div class="fs-2 me-3">{{ fileInfo()!.icon }}</div>
-            <div class="flex-grow-1 min-width-0">
-              <h6 class="mb-0 text-truncate">{{ fileInfo()!.name }}</h6>
-              <small class="text-muted">{{ fileInfo()!.size }}</small>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-danger border-0" (click)="closeButton()">
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-        }
+        <!-- Name Field -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="color: #1a4731;">
+            👤 Your Name (optional)
+          </label>
+          <input type="text"
+                 class="form-control allhalals-input"
+                 placeholder="e.g. Ahmed Al-Rashid"
+                 [(ngModel)]="state().uploaderName">
+        </div>
 
-        <!-- Form Fields -->
-        <div class="row g-3 mb-4">
-          <div class="col-12">
-            <label class="form-label small fw-semibold text-muted text-uppercase">Your Name (Optional)</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0"><i class="bi bi-person text-muted"></i></span>
-              <input type="text" class="form-control border-start-0 ps-0"
-                     [(ngModel)]="state().uploaderName" placeholder="Anonymous">
-            </div>
-          </div>
-
-          <div class="col-12">
-            <label class="form-label small fw-semibold text-muted text-uppercase">Invite Code *</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0"><i class="bi bi-shield-lock text-muted"></i></span>
-              <input type="text" class="form-control border-start-0 ps-0"
-                     [(ngModel)]="state().inviteCode" placeholder="Enter invite code" required>
-            </div>
-            <div class="form-text small">Ask for an invite code to upload</div>
-          </div>
+        <!-- Invite Code Field -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold" style="color: #1a4731;">
+            🔑 Invite Code *
+          </label>
+          <input type="text"
+                 class="form-control allhalals-input"
+                 placeholder="Enter invite code"
+                 [(ngModel)]="state().inviteCode">
         </div>
 
         <!-- Upload Button -->
-        <button class="btn btn-primary btn-lg w-100 py-3 shadow-sm d-flex align-items-center justify-content-center gap-2"
-                [disabled]="!state().file || !state().inviteCode || state().isUploading"
-                (click)="uploadFile()">
+        <button class="btn btn-primary w-100 py-3 fw-bold fs-6"
+                (click)="uploadFile()"
+                [disabled]="!state().file || !state().inviteCode || state().isUploading">
           @if (state().isUploading) {
-            <span class="spinner-border spinner-border-sm" role="status"></span>
-            <span>Uploading...</span>
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Uploading...
           } @else {
-            <i class="bi bi-cloud-arrow-up-fill fs-5"></i>
-            <span>Upload & Generate QR Code</span>
+            ✅ Upload Certificate
           }
         </button>
+
       </div>
     </div>
+
   } @else {
-    <!-- Success View -->
-    <div class="success-card text-center">
-      <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4">
-        <div class="mb-4">
-          <div class="display-1 text-success mb-3">
-            <i class="bi bi-check-circle-fill"></i>
-          </div>
-          <h2 class="fw-bold">Upload Successful!</h2>
-        </div>
+    <!-- Success State -->
+    <div class="success-card">
+      <div class="text-center mb-4">
+        <div style="font-size: 3rem;">✅</div>
+        <h2 class="fw-bold mt-2" style="color: #1a4731;">Successfully uploaded!</h2>
+        <p class="text-muted">Your Halal certificate has been saved</p>
+      </div>
 
-        <!-- File Preview -->
-        <div class="mb-4 p-3 bg-light rounded-4 d-inline-block mw-100">
-          @if (state().result!.fileUrl.includes('image')) {
-            <img [src]="state().result!.fileUrl" [alt]="state().result!.fileName" class="img-fluid preview-img shadow-sm">
-          } @else {
-            <div class="py-4 px-5">
-              <div class="display-4 mb-2">{{ state().result!.fileUrl.includes('pdf') ? '📄' : '📁' }}</div>
-              <p class="mb-0 fw-medium">{{ state().result!.fileName }}</p>
-            </div>
-          }
-        </div>
+      <div class="card">
+        <div class="card-body p-4">
 
-        <!-- Share Link -->
-        <div class="mb-4 text-start">
-          <label class="form-label small fw-semibold text-muted text-uppercase">Share Link</label>
-          <div class="input-group shadow-sm">
-            <input type="text" class="form-control bg-white border-end-0 font-monospace" [value]="state().result!.viewUrl" readonly>
-            <button class="btn btn-outline-primary px-3" (click)="copyToClipboard(state().result!.viewUrl)">
-              <i class="bi bi-copy"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- QR Code -->
-        <div class="mb-5">
-          <h5 class="fw-bold mb-3">Scan QR Code</h5>
-          <div class="qr-wrapper mb-3">
+          <!-- QR Code -->
+          <div class="text-center mb-4">
+            <h5 class="fw-bold mb-3" style="color: #1a4731;">🔲 Your QR-Code</h5>
             @if (qrCodeUrl()) {
-              <img [src]="qrCodeUrl()" alt="QR Code" class="img-fluid rounded shadow-sm" style="max-width: 256px;">
+              <div class="qr-wrapper">
+                <img [src]="qrCodeUrl()" alt="QR Code" />
+              </div>
+              <div class="mt-3">
+                <button class="btn btn-primary px-4" (click)="downloadQRCode()">
+                  ⬇ Download QR-Code
+                </button>
+              </div>
             } @else {
-              <div class="d-flex justify-content-center align-items-center" style="height: 256px;">
-                <span class="spinner-border text-primary" role="status"></span>
+              <div class="d-flex align-items-center justify-content-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                Generating QR-Code...
               </div>
             }
           </div>
-          <p class="text-muted small">Scan with your phone camera to view the file</p>
-        </div>
 
-        <!-- Actions -->
-        <div class="d-grid d-md-flex gap-3 justify-content-center">
-          <button class="btn btn-primary btn-lg px-4 shadow-sm d-flex align-items-center gap-2" (click)="downloadQRCode()">
-            <i class="bi bi-download"></i>
-            Download QR
+          <!-- View URL -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold" style="color: #1a4731;">🔗 Certificate Link</label>
+            <div class="d-flex gap-2">
+              <div class="result-url-box flex-grow-1">{{ state().result?.viewUrl }}</div>
+              <button class="btn btn-outline-primary px-3"
+                      (click)="copyToClipboard(state().result?.viewUrl || '')">
+                📋
+              </button>
+            </div>
+          </div>
+
+          <!-- Reset Button -->
+          <button class="btn btn-outline-secondary w-100 mt-2" (click)="resetForm()">
+            ↩ Upload another certificate
           </button>
-          <button class="btn btn-outline-secondary btn-lg px-4 d-flex align-items-center gap-2" (click)="resetForm()">
-            <i class="bi bi-plus-lg"></i>
-            Upload Another
-          </button>
+
         </div>
       </div>
     </div>

@@ -1,30 +1,70 @@
-/* You can add global styles to this file, and also import other style files */
 body {
-  background-color: #f8f9fa;
-  color: #212529;
+  background-color: #f0f7f3;
+  color: #1a1a1a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: #00a550 !important;
+  border-color: #00a550 !important;
   font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1a4731 !important;
+  border-color: #1a4731 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 165, 80, 0.3);
 }
 
 .card {
   border-radius: 1rem;
+  border: none;
+  box-shadow: 0 2px 16px rgba(0, 100, 60, 0.08);
 }
 
-/* Custom scrollbar for better look */
-::-webkit-scrollbar {
-  width: 8px;
+.bg-primary {
+  background-color: #1a4731 !important;
 }
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+
+.text-primary {
+  color: #00a550 !important;
 }
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
+
+.btn-outline-primary {
+  color: #00a550;
+  border-color: #00a550;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #bbb;
+
+.btn-outline-primary:hover {
+  background-color: #00a550;
+  border-color: #00a550;
 }
+
+.form-control:focus {
+  border-color: #00a550;
+  box-shadow: 0 0 0 0.2rem rgba(0, 165, 80, 0.2);
+}
+
+.allhalals-input {
+  border-radius: 8px;
+  border: 1.5px solid #c8e6d4;
+  padding: 10px 14px;
+  transition: all 0.2s;
+}
+
+.allhalals-input:focus {
+  border-color: #00a550;
+  box-shadow: 0 0 0 3px rgba(0, 165, 80, 0.15);
+  outline: none;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #e8f5ee; }
+::-webkit-scrollbar-thumb { background: #00a550; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #1a4731; }
+
+.success-snackbar { background: #00a550 !important; color: white !important; }
+.error-snackbar { background: #c62828 !important; color: white !important; }

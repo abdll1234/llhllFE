@@ -1,29 +1,36 @@
-<!-- src/app/app.component.html -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #1a4731 0%, #2d7a4f 100%); box-shadow: 0 2px 12px rgba(0,0,0,0.2);">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center gap-2" [routerLink]="['/']">
-      <i class="bi bi-qr-code-scan fs-4"></i>
-      <span>{{ appName }}</span>
+      <img src="assets/NEWLOGO.png" height="38" alt="AllHalals" style="border-radius: 8px;">
+      <div>
+        <span class="fw-bold fs-5 d-block" style="line-height: 1.1;">AllHalals</span>
+        <span class="d-block" style="font-size: 0.65rem; opacity: 0.8; letter-spacing: 1px;">ZERTIFIKAT MANAGER</span>
+      </div>
     </a>
 
-    <div class="navbar-nav ms-auto">
-      <a class="nav-link d-flex align-items-center gap-2" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <div class="navbar-nav ms-auto d-flex align-items-center gap-3">
+      <a class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded"
+         style="transition: background 0.2s;"
+         [routerLink]="['/']"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{exact: true}">
         <i class="bi bi-cloud-arrow-up-fill"></i>
-        Upload
+        <span>Hochladen</span>
       </a>
     </div>
   </div>
 </nav>
 
-<main class="main-content">
+<main class="main-content py-4 min-vh-100">
   <div class="container">
     <router-outlet></router-outlet>
   </div>
 </main>
 
-<footer class="footer py-4 mt-auto">
+<footer class="py-4 mt-auto" style="background: linear-gradient(135deg, #1a4731 0%, #2d7a4f 100%); color: white;">
   <div class="container text-center">
-    <p class="mb-1">© {{ currentYear }} <strong>{{ appName }}</strong></p>
-    <p class="small mb-0 opacity-75">Share files instantly with QR codes</p>
+    <div class="mb-2" style="font-size: 1.5rem;">☪</div>
+    <p class="mb-1 fw-bold">© {{ currentYear }} AllHalals</p>
+    <p class="small mb-0 opacity-75">Halal Zertifikate sicher verwalten & teilen</p>
   </div>
 </footer>
