@@ -9,7 +9,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import { MatIconModule} from '@angular/material/icon';
-import QRCodeStyling from "qr-code-styling";
+import {HttpClient} from '@angular/common/http';
 
 interface UploadState {
   file: File | null;
@@ -38,6 +38,7 @@ export class Upload4 {
   private apiService = inject(Api);
   private fileService = inject(FileService);
   private snackBar = inject(MatSnackBar);
+  private http = inject(HttpClient);
 
 
   @ViewChild("canvas") canvas: ElementRef | undefined;
@@ -89,33 +90,7 @@ export class Upload4 {
       if (response?.success) {
         this.state.update(s => ({ ...s, result: response.data, isUploading: false }));
 
-        // Use setTimeout to allow Angular to render the #canvas element first
-        setTimeout(() => {
-          if (this.canvas) {
-            const qrCode = new QRCodeStyling({
-              width: 256,
-              height: 256,
-              margin: 16,
-              data: response.data.viewUrl,
-              image: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-              dotsOptions: {
-                color: "#007e06",
-                type: "rounded",
-              },
-              backgroundOptions: {
-                color: "#FFFFFF",
-              },
-              imageOptions: {
-                crossOrigin: "anonymous",
-                margin: 5,         // Reduced margin from 14 to 5 makes the image larger
-                imageSize: 0.4,    // Increases the image size to 40% of the QR code (default is 0.4, but reducing margin helps)
-                hideBackgroundDots: true
-              },
-            });
-            qrCode.append(this.canvas.nativeElement);
-            this.qrCodeInstance = qrCode;
-          }
-        }, 0);
+        this.generateCustomQRCode(response.data.viewUrl);
 
         this.showSuccess('File uploaded successfully!');
       } else {
@@ -133,14 +108,69 @@ export class Upload4 {
     });
   }
 
-  qrCodeInstance: QRCodeStyling | null = null;
+  qrCodeBlob: Blob | null = null;
+  qrCodeUrl = signal<string | null>(null);
+
+  async generateCustomQRCode(data: string) {
+    const body = {
+      data: data,
+      config: {
+        body: 'japanese',
+        eye: 'frame2',
+        eyeBall: 'ball2',
+        erf1: [],
+        erf2: [],
+        erf3: [],
+        brf1: [],
+        brf2: [],
+        brf3: [],
+        bodyColor: '#1F4029',
+        bgColor: '#FFFFFF',
+        eye1Color: '#1F4029',
+        eye2Color: '#1F4029',
+        eye3Color: '#1F4029',
+        eyeBall1Color: '#1F4029',
+        eyeBall2Color: '#1F4029',
+        eyeBall3Color: '#1F4029',
+        gradientColor1: '',
+        gradientColor2: '',
+        gradientType: 'linear',
+        gradientOnEyes: 'true',
+        logo: 'https://llhll.vercel.app/assets/NEWLOGO.png',
+        logoMode: 'clean'
+      },
+      size: 600,
+      download: 'imageUrl',
+      file: 'png'
+    };
+
+    try {
+      const response = await this.http.post('https://api.qrcode-monkey.com/qr/custom', body, {
+        responseType: 'blob'
+      }).toPromise();
+
+      if (response) {
+        this.qrCodeBlob = response;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          this.qrCodeUrl.set(reader.result as string);
+        };
+        reader.readAsDataURL(response);
+      }
+    } catch (error) {
+      console.error('Error generating QR code with QR Code Monkey:', error);
+      this.showError('Failed to generate custom QR code. Using default.');
+    }
+  }
 
   downloadQRCode(): void {
-    if (this.qrCodeInstance) {
-      this.qrCodeInstance.download({
-        name: `qr-${this.state().result?.fileId || 'code'}`,
-        extension: 'png'
-      });
+    if (this.qrCodeBlob) {
+      const url = window.URL.createObjectURL(this.qrCodeBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `qr-${this.state().result?.fileId || 'code'}.png`;
+      link.click();
+      window.URL.revokeObjectURL(url);
       return;
     }
 
@@ -162,6 +192,8 @@ export class Upload4 {
       result: null
     });
     this.fileInfo.set(null);
+    this.qrCodeBlob = null;
+    this.qrCodeUrl.set(null);
   }
 
   closeButton(){

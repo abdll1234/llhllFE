@@ -108,7 +108,13 @@
         <div class="mb-5">
           <h5 class="fw-bold mb-3">Scan QR Code</h5>
           <div class="qr-wrapper mb-3">
-            <div #canvas></div>
+            @if (qrCodeUrl()) {
+              <img [src]="qrCodeUrl()" alt="QR Code" class="img-fluid rounded shadow-sm" style="max-width: 256px;">
+            } @else {
+              <div class="d-flex justify-content-center align-items-center" style="height: 256px;">
+                <span class="spinner-border text-primary" role="status"></span>
+              </div>
+            }
           </div>
           <p class="text-muted small">Scan with your phone camera to view the file</p>
         </div>
